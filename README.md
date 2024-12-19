@@ -46,3 +46,7 @@ The data architecture for this project starts initially by extracting data which
 # Dimensional Model: 
 ![Dimensional Model (1)](https://github.com/user-attachments/assets/282fde9b-8011-42c4-b9be-587f76d2d4c2)
 
+# Technical Architechture:
+![image](https://github.com/user-attachments/assets/5ea0e1e8-5ae5-4e1b-aa76-7f416f3f3921)
+This diagram illustrates a modern data pipeline for processing and analyzing data. The process begins with data being sourced from Data.gov, a platform providing open government datasets. The raw data is extracted and stored in Microsoft Azure Blob Storage, a scalable and secure cloud storage solution. From there, the data is loaded into Snowflake, a powerful cloud-based data warehouse that enables fast and efficient querying. In the next step, SQL-based transformations are performed using dbt (data build tool), which allows for modular, version-controlled data modeling and cleaning. These transformations ensure the data is structured, clean, and ready for analysis. Finally, the processed data is visualized using Tableau, a leading data visualization tool, to create interactive dashboards and reports, enabling stakeholders to derive meaningful insights. This workflow demonstrates a robust Extract, Load, and Transform (ELT) process designed for scalability, flexibility, and efficient decision-making.
+
