@@ -35,11 +35,13 @@ Source: https://catalog.data.gov/dataset/metro-bike-share-trip-data
 # Information Architechture: 
 
 ![Information Architecht](https://github.com/user-attachments/assets/1ee07542-a4f7-4359-ab35-2de759393981)
+
 The data used in this research comes from a website designed to retrieve unprocessed data on different travels. To make sure the process runs well, such data is first removed and momentarily stored in a staging area. Because it serves as a buffer and guards against data loss or collision in the event of unexpected pauses or failures during the extraction process, this type of temporary storage is essential. To make sure that the extracted data does not collide, the replication layer as a temporary storage can support the data processing pipeline in a simultaneous way to recovery in the event of problems. To ensure accuracy, the captured data is cleaned. Cleaning is an important process since it fixes errors and improves the quality. The procedure includes the following tasks: imputation of missing values, format standardization, eliminating duplicates, and data corrections. After cleaning, the data is reshaped and changed to make it feasible. Finally, the structured dataset is put into a data warehouse. At this level, the trip data is separated into fact and dimension tables in a star schema architecture to enable effective analytics. With the help of this schema, users may  examine data on various time, location, and trip-related variables to gain insightful knowledge about things like popular routes, fare patterns, peak usage periods, and much more. From extraction to loading, our data pipeline guarantees that the final dataset is correct and comprehensive, allowing it to be pre-loaded for additional analysis.
 
 # Data Architechture: 
 
 ![Data Architecht](https://github.com/user-attachments/assets/6c693668-c1c2-4c2e-9009-46c5f232aad3)
+
 The data architecture for this project starts initially by extracting data which is stored to guarantee data stability and integrity. As a precaution, this temporary store keeps a backup in case of data collisions. This architecture preserves an unchanged copy of the data that may be retrieved and reprocessed if necessary by establishing this intermediate layer. After the first phase, the data is sent to a Data Mart which is used for  analytical processing. After the second process, the data is further transformed to get it ready for viewing after being stored in the Data Mart. In this stage, data is compiled to develop its analytical use. Data is organized to provide graphical representations like barcharts, graphs, and dashboards in the last stages of visual processing as a part of data visulaization. This layered data architecture gives users an effective, organized pipeline that improves data-driven insights and makes decision-making easier, from temporary storage and Data Mart to transformation and display.
 
 
@@ -50,7 +52,39 @@ The data architecture for this project starts initially by extracting data which
 # Technical Architechture:
 
 ![image](https://github.com/user-attachments/assets/5ea0e1e8-5ae5-4e1b-aa76-7f416f3f3921)
+
 This diagram illustrates a modern data pipeline for processing and analyzing data. The process begins with data being sourced from Data.gov, a platform providing open government datasets. The raw data is extracted and stored in Microsoft Azure Blob Storage, a scalable and secure cloud storage solution. From there, the data is loaded into Snowflake, a powerful cloud-based data warehouse that enables fast and efficient querying. In the next step, SQL-based transformations are performed using dbt (data build tool), which allows for modular, version-controlled data modeling and cleaning. These transformations ensure the data is structured, clean, and ready for analysis. Finally, the processed data is visualized using Tableau, a leading data visualization tool, to create interactive dashboards and reports, enabling stakeholders to derive meaningful insights. This workflow demonstrates a robust Extract, Load, and Transform (ELT) process designed for scalability, flexibility, and efficient decision-making.
+
+# Transformation To Datawarehouse
+
+![image](https://github.com/user-attachments/assets/475927d1-a131-4dab-b7b6-e89c09275e82)
+
+This SQL script creates a table in the TEST schema using a Common Table Expression (CTE) named Bike_cte. The script extracts data from the ROW_LOCATION table in the SPRINGBOARD.TEST schema. It selects key fields, specifically BIKE_ID and TRIP_ID, and assigns them meaningful aliases to represent their purpose. The SELECT * FROM Bike_cte statement retrieves all rows from the CTE, producing a clean and structured dataset containing information about bike trips. This table is designed to facilitate further analysis of bike-related activities, enabling insights into trip patterns and bike utilization.
+
+![image](https://github.com/user-attachments/assets/2cf9c46a-c072-4e61-8342-2d4c3b2438c1)
+
+This SQL script creates a date-time dimension table (dim_datetime) within the TEST schema to enable detailed temporal analysis for trip data. It first uses a Common Table Expression (CTE), raw_date_cte, to extract and standardize raw date-time data from the START_TIME field in the ROW_LOCATION table, converting it into a consistent timestamp format (ISO_TIMESTAMP_EST) using the TO_TIMESTAMP function. A second CTE, date_cte, generates a range of date-time attributes from this standardized timestamp, including a unique date_id in YYYYMMDDHH format, numeric values for year, month, day, hour, and quarter, as well as textual representations of the month and day. It also derives week-related metrics like week_of_month and week_of_year, providing granular time-based segmentation. The final table outputs all these attributes, creating a structured dataset ideal for trend analysis, temporal filtering, and reporting in analytics workflows.
+
+![image](https://github.com/user-attachments/assets/8b5e2f5e-b71e-4fd0-951f-a6b861d8e917)
+
+This SQL script creates a passholder dimension table (dm_passholder) in the TEST schema to provide structured information about trip-related passholders. It uses a Common Table Expression (CTE) named passholder_cte to extract key attributes from the ROW_LOCATION table in the SPRINGBOARD.TEST schema. The script selects fields such as TRIP_ID, renamed as TRIP_ID, PASSHOLDER_TYPE, and PLAN_DURATION, organizing the data for clarity and usability. The final SELECT * retrieves the processed data, creating a structured table that can be used for analyzing passholder behaviors, subscription types, and plan durations to inform customer-focused decisions in analytics workflows.
+
+
+![image](https://github.com/user-attachments/assets/77b72c90-120c-450a-9505-13d43b1c1be1)
+
+This SQL script creates a route dimension table (dm_route) in the TEST schema to facilitate the analysis of trip route categories. It uses a Common Table Expression (CTE) named Bike_cte to extract key attributes from the ROW_LOCATION table in the SPRINGBOARD.TEST schema. The script selects and renames columns, including TRIP_ID and TRIP_ROUTE_CATEGORY, to structure the data for better usability. The final SELECT * retrieves all the processed data, creating a structured dataset that supports analytics on trip routes and their classifications, providing insights into route preferences and usage patterns.
+
+
+![image](https://github.com/user-attachments/assets/6c43582f-1e9c-48bf-b916-6ecd455af95c)
+
+This SQL script creates a station dimension table (dm_stations) within the TEST schema to organize and analyze data related to trip start and end stations. The script utilizes a Common Table Expression (CTE) named station_cte to extract key attributes from the ROW_LOCATION table in the SPRINGBOARD.TEST schema. It retrieves and renames fields for both ending and starting stations, including their IDs, latitudes, and longitudes, ensuring clarity and usability. The final SELECT * statement outputs the processed data, creating a structured dataset that enables analysis of station-related metrics such as trip origins, destinations, and geographical patterns, essential for optimizing station placement and usage.
+
+
+![image](https://github.com/user-attachments/assets/8ebf428b-754a-481d-9a24-2b932f9aa569)
+
+This SQL script creates a fact table (fact_trips) in the TEST schema to capture detailed trip data for analytics purposes. Using a Common Table Expression (CTE) named raw_fact_cte, it extracts and renames fields from the ROW_LOCATION table in the SPRINGBOARD.TEST schema. The fields include trip-specific details such as trip_id, durations, plan_duration, passholder_type, and trip_route_category, along with references to associated stations (start_station_id, end_station_id) and bikes (bike_id). Additionally, surrogate keys for time dimensions are generated by converting the START_TIME and END_TIME fields into formatted strings (start_time_key, end_time_key) for easier integration with date-time dimensions. The final SELECT * retrieves the structured data, creating a robust dataset for analyzing trip patterns, durations, and station utilization, enabling data-driven decisions for trip optimization.
+
+
 
 # Result:
 
